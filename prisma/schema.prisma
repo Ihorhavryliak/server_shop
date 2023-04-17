@@ -53,11 +53,11 @@ model Orders {
   currency         String      @default("USD")
   sum              Decimal?    @db.Decimal(9, 2)
   count            Int
-  city             String
-  address_delivery String
+  city             String?
+  address_delivery String?
   status           OrderStatus @default(PROCESSING)
   user             User        @relation(fields: [user_id], references: [id])
-  user_id          Int         @unique
+  user_id          Int         
 }
 
 model Cart {
@@ -66,10 +66,10 @@ model Cart {
   currency         String    @default("USD")
   sum              Decimal?  @db.Decimal(9, 2)
   count            Int
-  city             String
-  address_delivery String
+  city             String?
+  address_delivery String?
   user             User      @relation(fields: [user_id], references: [id])
-  user_id          Int       @unique
+  user_id          Int       
 }
 
 model Product {
@@ -77,7 +77,7 @@ model Product {
   name        String
   title       String?
   description String?
-  price       Decimal    @db.Decimal(9, 2) @default(0)
+  price       Decimal    @default(0) @db.Decimal(9, 2)
   count       Int        @default(1)
   image       String[]
   cart        Cart?      @relation(fields: [cart_id], references: [id])
