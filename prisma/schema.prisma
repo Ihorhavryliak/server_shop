@@ -15,20 +15,89 @@ enum Roles {
   ADMIN
   MANAGER
 }
-
-model User {
-  id          Int                @id @default(autoincrement())
-  email       String             @unique
-  password    String
-  firstName   String?
-  roles       Roles[]              @default([USER])
-  information User_information[]
-  city        String?
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
 }
 
-model User_information {
-  id             Int  @id @default(autoincrement())
-  user           User @relation(fields: [information_id], references: [id])
-  age            Int
-  information_id Int
+model User {
+  id                   Int                  @id @default(autoincrement())
+  firs_name            String?
+  last_name            String?
+  avatar               String[]
+  email                String               @unique
+  password             String
+  roles                 Roles[]              @default([USER])
+  addition_information AdditionInformation?
+  orders               Orders[]
+  cart                 Cart[]
+}
+
+model AdditionInformation {
+  id              Int      @id @default(autoincrement())
+  city            String
+  phone           String
+  age             Int
+  address_delivery String
+  user            User     @relation(fields: [user_id], references: [id])
+  user_id         Int      @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Orders {
+  id              Int       @id @default(autoincrement())
+  products_id     Product[]
+  currency        String    @default("USD")
+  sum             Decimal?  @db.Decimal(9, 2)
+  count           Int
+  city            String
+  address_delivery String
+  status          OrderStatus @default(PROCESSING)
+  user            User      @relation(fields: [user_id], references: [id])
+  user_id         Int       @unique
+}
+
+model Cart {
+  id              Int       @id @default(autoincrement())
+  products_id     Product[]
+  currency        String    @default("USD")
+  sum             Decimal?  @db.Decimal(9, 2)
+  count           Int
+  city            String
+  address_delivery String
+  user            User      @relation(fields: [user_id], references: [id])
+  user_id         Int       @unique
+}
+
+model Product {
+  id          Int        @id @default(autoincrement())
+  name        String
+  title       String?
+  description String?
+  price       Decimal    @db.Decimal(9, 2)
+  count       Int
+  image       String[]
+  cart        Cart?      @relation(fields: [cart_id], references: [id])
+  cart_id     Int?
+  orders      Orders?    @relation(fields: [orders_id], references: [id])
+  orders_id   Int?
+  categories  Category[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Category {
+  id            Int        @id @default(autoincrement())
+  name          String
+  image         String[]
+  title         String?
+  description   String?
+  products      Product[]
+  childId       Category[] @relation("Category")
+  subcategories Category[] @relation("Category")
+  isMain        Boolean    @default(false)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }

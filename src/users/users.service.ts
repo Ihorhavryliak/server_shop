@@ -3,7 +3,6 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from './dto/users.dto';
@@ -15,7 +14,11 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: UserDto): Promise<DataTokenType> {
-    const isUser = await this.findUser(dto.email);
+    const isUser = await this.prisma.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
     if (isUser)
       throw new HttpException(
         { success: false, message: 'Conflict' },
@@ -48,13 +51,6 @@ export class UsersService {
   async login(dto: UserDto): Promise<DataTokenType> {
     //find user
     const user = await this.findUser(dto.email);
-    // check is user
-    if (!user) {
-      throw new HttpException(
-        { success: false, message: 'Unauthorized' },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
     //compare password
     const matchPassword = await bcrypt.compare(dto.password, user.password);
     if (!matchPassword) {
@@ -69,12 +65,6 @@ export class UsersService {
     //find user
     const user = await this.findUser(email);
     // check is user
-    if (!user) {
-      throw new HttpException(
-        { success: false, message: 'Unauthorized' },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
     return { sub: user.id, email: user.email, roles: user.roles };
   }
 
@@ -84,10 +74,13 @@ export class UsersService {
       where: {
         email,
       },
-    })) as UserDto;
+    })) as any;
     //check
     if (!user) {
-      throw new UnauthorizedException();
+      throw new HttpException(
+        { success: false, message: 'Unauthorized' },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     return user;
   }

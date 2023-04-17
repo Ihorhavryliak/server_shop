@@ -8,6 +8,10 @@ import { PrismaModule } from './prisma/prisma.module';
 import { RolesGuard } from './auth/guard/roles.guard';
 import { JwtService } from '@nestjs/jwt';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { CategoryController } from './category/category.controller';
+import { CategoryService } from './category/category.service';
+import { CategoryModule } from './category/category.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -24,8 +28,10 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     AuthModule,
     UsersModule,
     PrismaModule,
+    CategoryModule,
+    ProductModule,
   ],
-  controllers: [],
+  controllers: [CategoryController],
   providers: [
     {
       provide: APP_GUARD,
@@ -41,6 +47,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
       useClass: RolesGuard,
     },
     JwtService,
+    CategoryService,
   ],
 })
 export class AppModule {}

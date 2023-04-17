@@ -5,22 +5,26 @@ import {
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import fastifyCookie from '@fastify/cookie';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import helmet from '@fastify/helmet';
 import fastifyCsrf from '@fastify/csrf-protection';
+import { PrismaService } from './prisma/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
   );
-
+  app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
+  const prismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app);
   await app.register(helmet);
   app.enableCors({
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
+
   await app.register(fastifyCsrf);
   await app.register(fastifyCookie, {
     secret: process.env.COOKIES_SECRET, // for cookies signature

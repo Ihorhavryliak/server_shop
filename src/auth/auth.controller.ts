@@ -54,10 +54,10 @@ export class AuthController {
   async refreshToken(@Req() request: FastifyRequest) {
     return this.authService.refreshToken(request);
   }
-  @Public()
+  /*  @Public()
   @Get('file')
   @Roles(Role.User)
   async file(@Req() request: FastifyRequest) {
     return { file: 'file' };
-  }
+  } */
 }
