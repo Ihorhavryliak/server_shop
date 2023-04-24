@@ -15,7 +15,11 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
-  app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: 'api/v1',
+    prefix: '',
+  });
   const prismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
   await app.register(helmet);
