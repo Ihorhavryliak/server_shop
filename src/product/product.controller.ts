@@ -10,6 +10,8 @@ import {
   Post,
   Patch,
   Query,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 
 @Controller('product')
@@ -21,6 +23,29 @@ export class ProductController {
     return this.productService.createProduct(dto);
   }
 
+  /* @Post('upload')
+  @UseInterceptors(
+    AnyFilesInterceptor({
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = `${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        },
+      }),
+      limits: {
+        files: 1,
+        fileSize: 1024 * 1024 * 5, // 5MB
+      },
+    }),
+  )
+  async uploadFile(@UploadedFiles() files: any) {
+    console.log(files);
+  }
+ */
   @Get()
   @HttpCode(HttpStatus.OK)
   async getProduct() {
