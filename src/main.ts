@@ -34,7 +34,7 @@ async function bootstrap() {
     secret: process.env.COOKIES_SECRET, // for cookies signature
   });
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000);
+  await app.listen(process.env.PORT);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

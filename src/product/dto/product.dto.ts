@@ -2,8 +2,8 @@ import { IsEmpty, IsNotEmpty, IsString } from 'class-validator';
 
 export class ProductDTO {
   id: number;
-  @IsString()
-  @IsNotEmpty()
+  /* @IsString()
+  @IsNotEmpty() */
   name: string;
   title: string;
   description: string;

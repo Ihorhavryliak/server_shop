@@ -1,3 +1,8 @@
+import {
+  File,
+  FileInterceptor,
+  FilesInterceptor,
+} from '@nest-lab/fastify-multer';
 import { ProductDTO } from './dto/product.dto';
 import { ProductService } from './product.service';
 import {
@@ -14,38 +19,29 @@ import {
   UploadedFiles,
 } from '@nestjs/common';
 
+export type FileProduct = {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  buffer: any;
+  size: number;
+};
+
 @Controller('product')
 export class ProductController {
   constructor(private productService: ProductService) {}
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async createProduct(@Body() dto: ProductDTO) {
-    return this.productService.createProduct(dto);
+  @UseInterceptors(FilesInterceptor('files'))
+  async createProduct(
+    @Body() dto: ProductDTO,
+    @UploadedFiles()
+    files: Array<FileProduct>,
+  ) {
+    return this.productService.createProduct(dto, files);
   }
 
-  /* @Post('upload')
-  @UseInterceptors(
-    AnyFilesInterceptor({
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          const filename = `${uniqueSuffix}${ext}`;
-          callback(null, filename);
-        },
-      }),
-      limits: {
-        files: 1,
-        fileSize: 1024 * 1024 * 5, // 5MB
-      },
-    }),
-  )
-  async uploadFile(@UploadedFiles() files: any) {
-    console.log(files);
-  }
- */
   @Get()
   @HttpCode(HttpStatus.OK)
   async getProduct() {
