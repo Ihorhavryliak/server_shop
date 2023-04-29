@@ -3,14 +3,8 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "assets": [
-      {
-        "include": "**/uploads/**/*",
-        "outDir": "dist/src",
-        "watchAssets": true
-      }
-    ],
-    "plugins": ["@nestjs/swagger"],
-    "deleteOutDir": true
+    "assets": [{ "include": "uploads/**/*", "outDir": "dist/src/" }],
+    "watchAssets": true,
+    "plugins": ["@nestjs/swagger"]
   }
 }
