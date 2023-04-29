@@ -6,7 +6,7 @@ import {
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { UserDto } from 'src/users/dto/users.dto';
+import { CreateUserDto, UserDto } from 'src/users/dto/users.dto';
 import { DecodedJwtType } from './guard/roles.guard';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async singUp(user: UserDto, response: FastifyReply) {
+  async singUp(user: CreateUserDto, response: FastifyReply) {
     try {
       //check  is user and get sub id and email
       const dataUser = await this.usersService.create(user);
@@ -48,7 +48,7 @@ export class AuthService {
     }
   }
 
-  async login(user: UserDto, response: FastifyReply) {
+  async login(user: CreateUserDto, response: FastifyReply) {
     const dataUser = await this.usersService.login(user);
     //create token
     const accessToken = {

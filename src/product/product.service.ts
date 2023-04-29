@@ -1,6 +1,6 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { ProductDTO } from './dto/product.dto';
+import { ProductCreteDTO, ProductDTO } from './dto/product.dto';
 import { join } from 'path';
 import * as fs from 'fs';
 import { FileProduct } from './product.controller';
@@ -8,17 +8,17 @@ import { FileProduct } from './product.controller';
 @Injectable()
 export class ProductService {
   constructor(private prisma: PrismaService) {}
-  async createProduct(dto: ProductDTO, files: FileProduct[]) {
+  async createProduct(dto: ProductCreteDTO, files: FileProduct[]) {
     try {
       //create product
-      const connectArr = dto.categories ? [{ id: dto.categories }] : [];
+      const connectArr = dto.categories ? [{ id: +dto.categories }] : [];
       const product = await this.prisma.product.create({
         data: {
           name: dto.name,
           title: dto.title ? dto.title : null,
           description: dto.description ? dto.description : null,
-          price: dto.price ? dto.price : 0,
-          count: dto.count ? dto.count : 1,
+          price: dto.price ? +dto.price : 0,
+          count: dto.count ? +dto.count : 1,
           //image: nameImages,
           categories: {
             connect: connectArr,
@@ -27,7 +27,7 @@ export class ProductService {
       });
       //file
       const nameImages = [];
-      if (files.length > 0) {
+      if (files && files.length > 0) {
         const FILE_TYPES = ['image/png', 'image/jpg', 'image/jpeg'];
         const { originalname, buffer } = files[0];
         files.forEach((file) => {

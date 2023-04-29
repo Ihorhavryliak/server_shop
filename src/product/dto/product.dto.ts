@@ -1,9 +1,12 @@
+import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
 import { IsEmpty, IsNotEmpty, IsString } from 'class-validator';
 
 export class ProductDTO {
   id: number;
-  /* @IsString()
-  @IsNotEmpty() */
+  @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
+  files: any[];
+  @IsString()
+  @IsNotEmpty()
   name: string;
   title: string;
   description: string;
@@ -11,10 +14,8 @@ export class ProductDTO {
   count: number;
   image: string[];
   cart: string;
-  cart_id: number;
   orders: number;
-  orders_id: number;
   categories: number;
-  createdAt: string;
-  updatedAt: string;
 }
+
+export class ProductCreteDTO extends OmitType(ProductDTO, ['id'] as const) {}

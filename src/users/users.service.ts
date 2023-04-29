@@ -5,15 +5,16 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UserDto } from './dto/users.dto';
+import { CreateUserDto, UserDto } from './dto/users.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as bcrypt from 'bcrypt';
+import { DataTokenType } from 'src/types/user/user.type';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(dto: UserDto): Promise<DataTokenType> {
+  async create(dto: CreateUserDto): Promise<DataTokenType> {
     const isUser = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
@@ -48,7 +49,7 @@ export class UsersService {
 
     return { sub: user.id, email: user.email, roles: user.roles };
   }
-  async login(dto: UserDto): Promise<DataTokenType> {
+  async login(dto: CreateUserDto): Promise<DataTokenType> {
     //find user
     const user = await this.findUser(dto.email);
     //compare password
@@ -85,9 +86,3 @@ export class UsersService {
     return user;
   }
 }
-
-export type Token = {
-  accessToken: string;
-};
-
-export type DataTokenType = { sub: number; email: string; roles: string[] };

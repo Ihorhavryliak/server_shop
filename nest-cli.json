@@ -5,10 +5,12 @@
   "compilerOptions": {
     "assets": [
       {
-        "include": "uploads/**/*",
+        "include": "**/uploads/**/*",
+        "outDir": "dist/src",
         "watchAssets": true
       }
     ],
+    "plugins": ["@nestjs/swagger"],
     "deleteOutDir": true
   }
 }
